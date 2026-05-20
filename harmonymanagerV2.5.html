@@ -2,7 +2,7 @@
 <html lang="ja">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
 <title>HarmoniX — 音楽ツール</title>
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700&family=Space+Mono:wght@400;700&display=swap');
@@ -19,6 +19,12 @@
   --text-dim: #6a6a8a;
   --white-key: #f0ede5;
   --black-key: #1a1820;
+  --app-padding: 24px;
+  --panel-padding: 16px;
+  --key-height: 192px;
+  --key-width: 44px;
+  --black-height: 120px;
+  --black-width: 28px;
 }
 
 * { margin:0; padding:0; box-sizing:border-box; }
@@ -46,7 +52,7 @@ body::before {
   position:relative; z-index:1;
   max-width: 1200px;
   margin: 0 auto;
-  padding: 24px 16px;
+  padding: var(--app-padding);
 }
 
 h1 {
@@ -74,8 +80,8 @@ header {
   flex-wrap: wrap;
   align-items: flex-start;
   gap: 12px;
-  margin-bottom: 28px;
-  padding-bottom: 20px;
+  margin-bottom: 20px;
+  padding-bottom: 16px;
   border-bottom: 1px solid var(--border);
 }
 
@@ -94,7 +100,7 @@ header {
   justify-content: center;
   gap: 4px;
   width: 72px;
-  height: 64px;
+  height: 60px;
   border-radius: 10px;
   border: 1px solid var(--border);
   background: var(--panel);
@@ -128,16 +134,16 @@ header {
 /* ── CONTROLS ── */
 .hd-controls {
   display: flex;
-  gap: 12px;
+  gap: 10px;
   flex-wrap: wrap;
-  margin-bottom: 20px;
+  margin-bottom: 16px;
 }
 
 .ctrl-group {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 8px;
-  padding: 12px 16px;
+  padding: var(--panel-padding);
   display: flex;
   flex-direction: column;
   gap: 8px;
@@ -173,14 +179,14 @@ header {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 0 20px;
-  margin-bottom: 20px;
+  padding: 0 16px;
+  margin-bottom: 16px;
   display: flex;
   align-items: center;
-  gap: 16px;
-  height: 88px;
-  min-height: 88px;
-  max-height: 88px;
+  gap: 12px;
+  height: 80px;
+  min-height: 80px;
+  max-height: 80px;
   overflow: hidden;
   flex-shrink: 0;
   box-sizing: border-box;
@@ -188,15 +194,15 @@ header {
 
 .chord-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 3.6rem;
+  font-size: 3.2rem;
   line-height: 1;
   color: var(--accent);
-  width: 160px;
-  min-width: 160px;
-  max-width: 160px;
-  height: 58px;
-  min-height: 58px;
-  max-height: 58px;
+  width: 140px;
+  min-width: 140px;
+  max-width: 140px;
+  height: 52px;
+  min-height: 52px;
+  max-height: 52px;
   overflow: hidden;
   white-space: nowrap;
   text-overflow: clip;
@@ -214,14 +220,14 @@ header {
   display: flex;
   flex-direction: column;
   justify-content: center;
-  gap: 5px;
-  height: 88px;
-  min-height: 88px;
-  max-height: 88px;
+  gap: 4px;
+  height: 80px;
+  min-height: 80px;
+  max-height: 80px;
 }
 
 .chord-type {
-  font-size: 0.78rem;
+  font-size: 0.75rem;
   color: var(--text-dim);
   white-space: nowrap;
   overflow: hidden;
@@ -239,13 +245,13 @@ header {
   align-items: center;
 }
 .note-pill {
-  padding: 2px 8px;
+  padding: 2px 6px;
   border-radius: 99px;
   background: rgba(71,184,232,0.12);
   border: 1px solid var(--accent2);
   color: var(--accent2);
   font-family: 'Space Mono', monospace;
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   white-space: nowrap;
   flex-shrink: 0;
   line-height: 1.4;
@@ -259,13 +265,13 @@ header {
 }
 
 .tuning-badge {
-  padding: 4px 10px;
+  padding: 4px 8px;
   border-radius: 4px;
   background: rgba(232,197,71,0.1);
   border: 1px solid rgba(232,197,71,0.3);
   color: var(--accent);
   font-family: 'Space Mono', monospace;
-  font-size: 0.62rem;
+  font-size: 0.6rem;
   letter-spacing: 0.08em;
   white-space: nowrap;
   flex-shrink: 0;
@@ -278,7 +284,7 @@ header {
   border-radius: 4px;
   font-family: 'Space Mono', monospace;
   font-size: 0.65rem;
-  padding: 2px 6px;
+  padding: 2px 4px;
   outline: none;
   cursor: pointer;
 }
@@ -295,15 +301,15 @@ header {
   align-items: center;
   justify-content: center;
   gap: 4px;
-  padding: 0 18px;
-  height: 44px;
+  padding: 0 14px;
+  height: 40px;
   border: 1px solid var(--border);
   background: var(--panel);
   color: var(--text);
   border-radius: 8px;
   cursor: pointer;
   font-family: 'Space Mono', monospace;
-  font-size: 0.8rem;
+  font-size: 0.75rem;
   font-weight: 700;
   white-space: nowrap;
   flex-shrink: 0;
@@ -318,8 +324,6 @@ header {
 }
 .oct-btn.prev { border-color: var(--accent2); color: var(--accent2); }
 .oct-btn.next { border-color: var(--accent2); color: var(--accent2); }
-.oct-btn.prev:active { background: rgba(71,184,232,0.15); }
-.oct-btn.next:active { background: rgba(71,184,232,0.15); }
 
 .oct-range-label {
   flex: 1;
@@ -342,7 +346,7 @@ header {
 .keyboard-wrap {
   overflow-x: auto;
   overflow-y: hidden;
-  height: 210px;
+  height: calc(var(--key-height) + 16px);
   padding-bottom: 12px;
   scrollbar-width: thin;
   scrollbar-color: var(--border) transparent;
@@ -353,15 +357,15 @@ header {
 
 .keyboard {
   position: relative;
-  height: 192px;
+  height: var(--key-height);
   user-select: none;
 }
 
 .key.white {
   position: absolute;
   top: 0;
-  width: 44px;
-  height: 192px;
+  width: var(--key-width);
+  height: var(--key-height);
   background: var(--white-key);
   border-left: 1px solid #c8b898;
   border-right: 1px solid #b0a080;
@@ -377,8 +381,8 @@ header {
 .key.black {
   position: absolute;
   top: 0;
-  width: 28px;
-  height: 120px;
+  width: var(--black-width);
+  height: var(--black-height);
   background: var(--black-key);
   border-left: 1px solid #0a0810;
   border-right: 1px solid #0a0810;
@@ -404,7 +408,7 @@ header {
 }
 
 .volume-row {
-  display:flex; align-items:center; gap:10px; margin-top:14px;
+  display:flex; align-items:center; gap:10px; margin-top:10px;
 }
 .vol-label { font-size:0.63rem; color:var(--text-dim); font-family:'Space Mono',monospace; min-width:36px; }
 .vol-slider {
@@ -428,99 +432,95 @@ header {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 12px;
-  padding: 24px;
+  padding: var(--panel-padding);
 }
 
-.metro-display { text-align:center; margin-bottom:16px; }
+.metro-display { text-align:center; margin-bottom:8px; }
 .bpm-number {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 7rem;
+  font-size: 5.5rem;
   line-height:1;
   color: var(--accent);
-  text-shadow: 0 0 60px rgba(232,197,71,0.3);
+  text-shadow: 0 0 40px rgba(232,197,71,0.3);
   transition: color 0.1s;
 }
 .bpm-unit { font-size:0.72rem; color:var(--text-dim); letter-spacing:0.3em; font-family:'Space Mono',monospace; }
 
 .bpm-slider {
   width:100%; -webkit-appearance:none; height:4px;
-  border-radius:2px; background:var(--border); outline:none; margin:14px 0;
+  border-radius:2px; background:var(--border); outline:none; margin:10px 0;
 }
 .bpm-slider::-webkit-slider-thumb {
-  -webkit-appearance:none; width:20px; height:20px; border-radius:50%;
-  background:var(--accent); cursor:pointer; box-shadow:0 0 8px rgba(232,197,71,0.5);
+  -webkit-appearance:none; width:18px; height:18px; border-radius:50%;
+  background:var(--accent); cursor:pointer;
 }
 
 .metro-btn {
-  width:100%; padding:13px; border-radius:8px; border:none;
-  font-family:'Bebas Neue',sans-serif; font-size:1.4rem; letter-spacing:0.15em;
+  width:100%; padding:11px; border-radius:8px; border:none;
+  font-family:'Bebas Neue',sans-serif; font-size:1.3rem; letter-spacing:0.15em;
   cursor:pointer; transition:all 0.15s;
 }
 .metro-btn.start { background:var(--accent); color:var(--bg); }
-.metro-btn.start:hover { background:#f0d050; box-shadow:0 0 20px rgba(232,197,71,0.4); }
-.metro-btn.start.running { background:var(--accent3); box-shadow:0 0 20px rgba(232,71,120,0.4); }
+.metro-btn.start:hover { background:#f0d050; }
+.metro-btn.start.running { background:var(--accent3); }
 .metro-btn.tap {
   background:transparent; border:1px solid var(--accent2);
-  color:var(--accent2); margin-top:10px;
+  color:var(--accent2); margin-top:8px;
 }
-.metro-btn.tap:hover { background:rgba(71,184,232,0.1); }
-.metro-btn.tap:active { background:rgba(71,184,232,0.25); }
 
 .beat-visualizer {
   display:flex; gap:6px; justify-content:center;
-  margin:14px 0; flex-wrap:wrap; min-height:20px;
+  margin:10px 0; flex-wrap:wrap; min-height:16px;
 }
 .beat-dot {
-  width:11px; height:11px; border-radius:50%;
+  width:10px; height:10px; border-radius:50%;
   background:var(--border);
 }
-.beat-dot.beat-main { width:15px; height:15px; }
+.beat-dot.beat-main { width:13px; height:13px; }
 .beat-dot.lit-main { background:var(--accent); box-shadow:0 0 10px var(--accent); }
 .beat-dot.lit-sub  { background:var(--accent2); box-shadow:0 0 7px var(--accent2); }
 
-.pendulum-wrap { display:flex; justify-content:center; margin:6px 0; }
+.pendulum-wrap { display:flex; justify-content:center; margin:4px 0; }
 .pendulum-track {
-  position:relative; width:130px; height:10px;
-  background:var(--border); border-radius:5px;
+  position:relative; width:120px; height:8px;
+  background:var(--border); border-radius:4px;
 }
 .pendulum-ball {
   position:absolute; top:50%; transform:translate(-50%,-50%);
-  width:20px; height:20px; border-radius:50%;
-  background:var(--accent); box-shadow:0 0 14px var(--accent);
-  left: 10%;
+  width:16px; height:16px; border-radius:50%;
+  background:var(--accent); box-shadow:0 0 10px var(--accent);
+  left: 50%;
 }
 
-.sub-ctrl { margin-top:16px; }
-.sub-label { font-size:0.63rem; letter-spacing:0.2em; color:var(--text-dim); font-family:'Space Mono',monospace; text-transform:uppercase; margin-bottom:8px; }
+.sub-ctrl { margin-top:12px; }
+.sub-label { font-size:0.63rem; letter-spacing:0.2em; color:var(--text-dim); font-family:'Space Mono',monospace; text-transform:uppercase; margin-bottom:6px; }
 .sub-grid { display:grid; grid-template-columns:repeat(2,1fr); gap:6px; }
 .sub-btn {
-  padding:8px 6px; border:1px solid var(--border);
+  padding:6px; border:1px solid var(--border);
   background:transparent; color:var(--text-dim);
   border-radius:6px; cursor:pointer;
   font-family:'Space Mono',monospace; font-size:0.68rem;
   transition:all 0.15s; line-height:1.4;
 }
-.sub-btn:hover { border-color:var(--accent3); color:var(--accent3); }
 .sub-btn.active { background:rgba(232,71,120,0.15); border-color:var(--accent3); color:var(--accent3); }
 
-.time-sig-grid { display:flex; gap:6px; flex-wrap:wrap; margin-top:8px; }
+.time-sig-grid { display:flex; gap:6px; flex-wrap:wrap; margin-top:6px; }
 .tsig-btn {
-  padding:6px 12px; border:1px solid var(--border);
+  padding:6px 10px; border:1px solid var(--border);
   background:transparent; color:var(--text-dim);
   border-radius:4px; cursor:pointer;
-  font-family:'Space Mono',monospace; font-size:0.73rem; transition:all 0.15s;
+  font-family:'Space Mono',monospace; font-size:0.73rem;
 }
 .tsig-btn.active { background:rgba(232,197,71,0.15); border-color:var(--accent); color:var(--accent); }
-.tsig-btn:hover:not(.active) { border-color:var(--text-dim); color:var(--text); }
 
-.section-title { font-size:0.63rem; letter-spacing:0.2em; color:var(--text-dim); font-family:'Space Mono',monospace; text-transform:uppercase; margin-bottom:8px; }
+.section-title { font-size:0.63rem; letter-spacing:0.2em; color:var(--text-dim); font-family:'Space Mono',monospace; text-transform:uppercase; margin-bottom:6px; }
 
 /* ── TUNER ── */
 .tuner-layout {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  max-width: 520px;
+  gap: 12px;
+  max-width: 480px;
   margin: 0 auto;
 }
 
@@ -531,105 +531,85 @@ header {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 10px;
-  padding: 14px 18px;
+  padding: 10px 16px;
 }
 .a-ref-label {
   font-family: 'Space Mono', monospace;
   font-size: 0.72rem;
   color: var(--text-dim);
-  white-space: nowrap;
 }
 
 .a-spin-btn {
-  width: 44px;
-  height: 44px;
+  width: 40px;
+  height: 40px;
   border: 1px solid var(--accent);
   background: transparent;
   color: var(--accent);
-  font-size: 1.3rem;
-  line-height: 1;
+  font-size: 1.2rem;
   cursor: pointer;
   border-radius: 6px;
-  font-family: 'Space Mono', monospace;
-  transition: background 0.12s;
-  -webkit-tap-highlight-color: transparent;
-  flex-shrink: 0;
 }
-.a-spin-btn:active { background: rgba(232,197,71,0.2); }
 
 .a-spin-input {
-  width: 72px;
-  height: 44px;
+  width: 64px;
+  height: 40px;
   background: transparent;
   border: none;
   border-top: 1px solid var(--border);
   border-bottom: 1px solid var(--border);
   color: var(--accent);
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 2rem;
+  font-size: 1.8rem;
   text-align: center;
-  letter-spacing: 0.05em;
-  padding: 0 4px;
   outline: none;
-  -moz-appearance: textfield;
-}
-.a-spin-input::-webkit-outer-spin-button,
-.a-spin-input::-webkit-inner-spin-button {
-  -webkit-appearance: none;
-  margin: 0;
 }
 
 .tuner-note-panel {
   background: var(--panel);
   border: 1px solid var(--border);
   border-radius: 14px;
-  padding: 28px 20px 20px;
+  padding: 20px 16px;
   text-align: center;
 }
 .tuner-note-name {
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 6rem;
+  font-size: 5rem;
   line-height: 1;
   color: var(--accent);
-  text-shadow: 0 0 40px rgba(232,197,71,0.3);
-  transition: color 0.2s;
-  min-height: 6rem;
+  min-height: 5rem;
 }
-.tuner-note-name.in-tune  { color: #44e87a; text-shadow: 0 0 30px rgba(68,232,122,0.4); }
+.tuner-note-name.in-tune  { color: #44e87a; }
 .tuner-note-name.no-input { color: var(--border); }
 .tuner-freq-display {
   font-family: 'Space Mono', monospace;
-  font-size: 1rem;
+  font-size: 0.9rem;
   color: var(--text-dim);
-  margin-top: 4px;
-  min-height: 1.5rem;
+  min-height: 1.2rem;
 }
 
 .cent-meter-wrap {
-  margin: 20px auto 0;
+  margin: 16px auto 0;
   position: relative;
   width: 100%;
-  max-width: 400px;
 }
 .cent-track {
   position: relative;
-  height: 14px;
+  height: 12px;
   background: var(--panel2);
   border: 1px solid var(--border);
-  border-radius: 7px;
+  border-radius: 6px;
   overflow: hidden;
 }
 .cent-fill {
   position: absolute;
   top: 0; bottom: 0;
   width: 4px;
-  border-radius: 2px;
   background: var(--accent);
   left: 50%;
   transform: translateX(-50%);
-  transition: left 0.08s ease-out, background 0.15s;
+  transition: left 0.08s ease-out;
 }
-.cent-fill.in-tune  { background: #44e87a; box-shadow: 0 0 8px rgba(68,232,122,0.6); }
+.cent-fill.in-tune  { background: #44e87a; }
 .cent-fill.flat     { background: var(--accent2); }
 .cent-fill.sharp    { background: var(--accent3); }
 .cent-center-line {
@@ -637,26 +617,22 @@ header {
   top: -3px; bottom: -3px;
   left: 50%; width: 2px;
   background: rgba(255,255,255,0.25);
-  transform: translateX(-50%);
-  pointer-events: none;
 }
 .cent-labels {
   display: flex;
   justify-content: space-between;
-  margin-top: 5px;
+  margin-top: 4px;
   font-family: 'Space Mono', monospace;
-  font-size: 0.58rem;
+  font-size: 0.55rem;
   color: var(--text-dim);
-  padding: 0 2px;
 }
 .cent-value {
   text-align: center;
   font-family: 'Space Mono', monospace;
-  font-size: 1.1rem;
+  font-size: 1rem;
   font-weight: 700;
-  margin-top: 10px;
-  min-height: 1.6rem;
-  transition: color 0.15s;
+  margin-top: 8px;
+  min-height: 1.4rem;
 }
 .cent-value.in-tune { color: #44e87a; }
 .cent-value.flat    { color: var(--accent2); }
@@ -664,22 +640,20 @@ header {
 
 .tuner-mic-btn {
   width: 100%;
-  padding: 13px;
+  padding: 11px;
   border-radius: 8px;
   border: 1px solid var(--accent2);
   background: transparent;
   color: var(--accent2);
   font-family: 'Bebas Neue', sans-serif;
-  font-size: 1.3rem;
+  font-size: 1.2rem;
   letter-spacing: 0.15em;
   cursor: pointer;
-  transition: all 0.15s;
   display: flex;
   align-items: center;
   justify-content: center;
   gap: 8px;
 }
-.tuner-mic-btn:hover  { background: rgba(71,184,232,0.1); }
 .tuner-mic-btn.active {
   background: rgba(232,71,120,0.15);
   border-color: var(--accent3);
@@ -687,11 +661,68 @@ header {
 }
 
 .tuner-hint {
-  font-size: 0.68rem;
+  font-size: 0.65rem;
   color: var(--text-dim);
   text-align: center;
-  line-height: 1.7;
+  line-height: 1.6;
   font-family: 'Space Mono', monospace;
+}
+
+/* ═══════════════════════════════════════════════════
+   📱 DEVICE MACHINE AUTO RESPONSIVE OPTIMIZATION
+═══════════════════════════════════════════════════ */
+/* 💻 Large Screens (Desktops) */
+@media (min-width: 1025px) {
+  :root {
+    --app-padding: 32px;
+    --panel-padding: 20px;
+    --key-height: 200px;
+    --key-width: 46px;
+  }
+}
+
+/* タブレット端末 (iPad / 各種タブレット) */
+@media (max-width: 1024px) and (min-width: 768px) {
+  :root {
+    --app-padding: 16px;
+    --panel-padding: 12px;
+    --key-height: 170px;
+    --key-width: 38px;
+    --black-height: 105px;
+    --black-width: 24px;
+  }
+  h1 { font-size: 2.6rem; }
+  .chord-display { height: 74px; min-height: 74px; }
+  .chord-name { font-size: 2.8rem; width: 120px; min-width: 120px; }
+}
+
+/* スマートフォン端末 (iPhone / Android 縦画面) */
+@media (max-width: 767px) {
+  :root {
+    --app-padding: 10px;
+    --panel-padding: 10px;
+    --key-height: 150px;
+    --key-width: 34px;
+    --black-height: 92px;
+    --black-width: 20px;
+  }
+  h1 { font-size: 2.2rem; }
+  .subtitle { font-size: 0.65rem; letter-spacing: 0.2em; }
+  header { margin-bottom: 12px; padding-bottom: 10px; gap: 8px; }
+  .tab { height: 52px; width: 64px; border-radius: 8px; }
+  .tab-label { font-size: 0.5rem; letter-spacing: 0; }
+  .hd-controls { gap: 6px; margin-bottom: 10px; }
+  .ctrl-group { min-width: 140px; padding: 8px; gap: 4px; }
+  .toggle-btn { padding: 5px 0; font-size: 0.68rem; }
+  .chord-display { height: 68px; min-height: 68px; padding: 0 10px; margin-bottom: 10px; gap: 8px; }
+  .chord-name { font-size: 2.3rem; width: 95px; min-width: 95px; height: 42px; min-height: 42px; }
+  .chord-type { font-size: 0.68rem; }
+  .note-pill { font-size: 0.58rem; padding: 1px 4px; }
+  .tuning-badge { font-size: 0.55rem; padding: 2px 6px; }
+  .octave-nav { margin-bottom: 6px; }
+  .oct-btn { height: 36px; padding: 0 10px; font-size: 0.7rem; border-radius: 6px; }
+  .bpm-number { font-size: 4.5rem; }
+  .tuner-note-name { font-size: 4rem; min-height: 4rem; }
 }
 </style>
 </head>
@@ -711,10 +742,10 @@ header {
           <rect x="16" y="1" width="4" height="20" rx="1"/>
           <rect x="21" y="1" width="4" height="20" rx="1"/>
           <rect x="26" y="1" width="4" height="20" rx="1"/>
-          <rect x="4"  y="1" width="3" height="12" rx="1" fill="currentColor" stroke="none"/>
-          <rect x="9"  y="1" width="3" height="12" rx="1" fill="currentColor" stroke="none"/>
-          <rect x="19" y="1" width="3" height="12" rx="1" fill="currentColor" stroke="none"/>
-          <rect x="24" y="1" width="3" height="12" rx="1" fill="currentColor" stroke="none"/>
+          <path d="M4,1 h3 v12 h-3 z" fill="currentColor" stroke="none"/>
+          <path d="M9,1 h3 v12 h-3 z" fill="currentColor" stroke="none"/>
+          <path d="M19,1 h3 v12 h-3 z" fill="currentColor" stroke="none"/>
+          <path d="M24,1 h3 v12 h-3 z" fill="currentColor" stroke="none"/>
         </svg>
         <span class="tab-label">ハーモニー</span>
       </button>
@@ -771,7 +802,7 @@ header {
       </div>
       <div class="ctrl-group" style="min-width:100%;flex-basis:100%;">
         <div class="ctrl-label">基準音 A =</div>
-        <div style="display:flex;align-items:center;gap:0;margin-top:4px;">
+        <div style="display:flex;align-items:center;gap:0;margin-top:2px;">
           <button class="a-spin-btn" onclick="setA4(tunerA4-1)" aria-label="1下げる">−</button>
           <input type="number" class="a-spin-input" id="a4-display-harmony" min="415" max="470" value="442" onchange="setA4(this.value)">
           <button class="a-spin-btn" onclick="setA4(tunerA4+1)" aria-label="1上げる">＋</button>
@@ -817,7 +848,7 @@ header {
     <div class="keyboard-wrap">
       <div class="keyboard" id="keyboard"></div>
     </div>
-    <div style="margin-top:8px;font-size:0.6rem;color:var(--text-dim);font-family:'Space Mono',monospace;text-align:center;letter-spacing:0.1em;">
+    <div style="margin-top:6px;font-size:0.6rem;color:var(--text-dim);font-family:'Space Mono',monospace;text-align:center;letter-spacing:0.1em;">
       PC キー: A S D F G H J K L (白鍵) / W E T Y U O P (黒鍵) — C4 基準
     </div>
   </div>
@@ -861,20 +892,20 @@ header {
           <button class="tsig-btn" onclick="setTimeSig(1,this)">拍子なし</button>
         </div>
 
-        <div class="sub-ctrl" style="margin-top:20px;">
+        <div class="sub-ctrl">
           <div class="sub-label">裏拍 / サブディビジョン</div>
           <div class="sub-grid">
-            <button class="sub-btn active" id="sub-none"    onclick="setSubDiv('none',this)">なし<br><span style="font-size:0.58rem;color:var(--text-dim)">メインのみ</span></button>
-            <button class="sub-btn" id="sub-8th"     onclick="setSubDiv('8th',this)">8分音符<br><span style="font-size:0.58rem;color:var(--text-dim)">♩→ ♪♪</span></button>
-            <button class="sub-btn" id="sub-16th"    onclick="setSubDiv('16th',this)">16分音符<br><span style="font-size:0.58rem;color:var(--text-dim)">♩→ ♬♬♬♬</span></button>
-            <button class="sub-btn" id="sub-triplet" onclick="setSubDiv('triplet',this)">3連符<br><span style="font-size:0.58rem;color:var(--text-dim)">♩→ ♪♪♪</span></button>
+            <button class="sub-btn active" id="sub-none"    onclick="setSubDiv('none',this)">なし<br><span style="font-size:0.55rem;color:var(--text-dim)">メインのみ</span></button>
+            <button class="sub-btn" id="sub-8th"     onclick="setSubDiv('8th',this)">8分音符<br><span style="font-size:0.55rem;color:var(--text-dim)">♩→ ♪♪</span></button>
+            <button class="sub-btn" id="sub-16th"    onclick="setSubDiv('16th',this)">16分音符<br><span style="font-size:0.55rem;color:var(--text-dim)">♩→ ♬♬♬♬</span></button>
+            <button class="sub-btn" id="sub-triplet" onclick="setSubDiv('triplet',this)">3連符<br><span style="font-size:0.55rem;color:var(--text-dim)">♩→ ♪♪♪</span></button>
           </div>
         </div>
 
-        <div style="margin-top:20px;padding:12px;background:var(--panel2);border-radius:8px;border:1px solid var(--border);">
-          <div class="sub-label" style="margin-bottom:6px;">TAP TEMPO ヒント</div>
-          <div style="font-size:0.7rem;color:var(--text-dim);line-height:1.9;">
-            「TAP TEMPO」を2回以上タップ → BPM 自動計算<br>
+        <div style="margin-top:14px;padding:10px;background:var(--panel2);border-radius:8px;border:1px solid var(--border);">
+          <div class="sub-label" style="margin-bottom:4px;">TAP TEMPO ヒント</div>
+          <div style="font-size:0.68rem;color:var(--text-dim);line-height:1.7;">
+            「TAP TEMPO」を連続タップ → BPM 自動計算<br>
             2秒間タップなし → リセット
           </div>
         </div>
@@ -953,33 +984,39 @@ let tuning = 'equal';
 let timbre = 'sine';
 let autoRecognize = true; 
 let currentRoot = 0; // 0=C, 1=D♭ ... 11=B
+let currentRootOctave = 4; // 主音の基準オクターブを動的に保持
 let A4_FREQ = 442;
 let tunerA4 = 442;
 
-// Pure major scale frequency ratios (Root, m2, M2, m3, M3, P4, d5, P5, m6, M6, m7, M7)
 const JUST = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 9/5, 15/8];
 
 function noteToFreq(semitone) {
   if (tuning === 'equal') {
     return A4_FREQ * Math.pow(2, (semitone - 9) / 12);
   }
-  // Just Intonation calculation based on the current root (主音)
+
+  // 純正律の計算ロジック
   const notePitchClass = ((semitone % 12) + 12) % 12;
   const intervalFromRoot = (notePitchClass - currentRoot + 12) % 12;
   
-  // Calculate frequency of the current root in the same octave as the target note
-  const noteOctave = Math.floor(semitone / 12);
-  const rootSemitone = noteOctave * 12 + currentRoot;
+  // 割り出された主音の絶対ノート番号（オクターブ考慮）を計算
+  const rootSemitone = (currentRootOctave - 4) * 12 + currentRoot;
   
-  // Get equal tempered frequency of the root first as a proxy anchor
+  // 平均律における主音の周波数をアンカー（基準）にする
   const rootEqualFreq = A4_FREQ * Math.pow(2, (rootSemitone - 9) / 12);
   
+  // 主音から数えた純正律の周波数を算出
   let targetFreq = rootEqualFreq * JUST[intervalFromRoot];
   
-  // Wrap around octave correction if interval cross octave boundary
+  // 弾いている音が、基準オクターブの主音より音高クラスとして手前にある場合のオクターブ補正
   if (notePitchClass < currentRoot) {
     targetFreq *= 2;
   }
+
+  // 実際のノート番号と、基準とした主音ノート番号との間の「物理的なオクターブ差」を求めて乗算
+  const physicalOctaveDiff = Math.floor(semitone / 12) - Math.floor(rootSemitone / 12);
+  targetFreq *= Math.pow(2, physicalOctaveDiff);
+
   return targetFreq;
 }
 
@@ -1031,7 +1068,6 @@ function retuneActiveNotes() {
     const s = parseInt(semitone);
     const newFreq = noteToFreq(s);
     activeOscs[s].oscList.forEach((osc, idx) => {
-      // maintain harmonic overtones multipliers
       const harmonicMultiplier = timbre === 'sine' ? (idx + 1) : [1,3,5,7][idx];
       osc.frequency.setValueAtTime(newFreq * harmonicMultiplier, AC.currentTime);
     });
@@ -1087,7 +1123,7 @@ function buildKeyboard() {
       const wk = document.createElement('div');
       wk.className = 'key white';
       wk.dataset.semitone = semitone;
-      wk.style.left = (wi * (KW + KG)) + 'px';
+      wk.style.left = `calc(${wi} * (var(--key-width) + 2px))`;
 
       if (degree === 0) {
         const lbl = document.createElement('div');
@@ -1105,7 +1141,7 @@ function buildKeyboard() {
         const bk = document.createElement('div');
         bk.className = 'key black';
         bk.dataset.semitone = bs;
-        bk.style.left = (wi * (KW + KG) + KW - KB_W / 2 + KG / 2) + 'px';
+        bk.style.left = `calc(${wi} * (var(--key-width) + 2px) + var(--key-width) - var(--black-width) / 2 + 1px)`;
         addKeyEvents(bk, bs);
         kb.appendChild(bk);
       }
@@ -1113,7 +1149,7 @@ function buildKeyboard() {
       wi++;
     }
   }
-  kb.style.width = (wi * (KW + KG)) + 'px';
+  kb.style.width = `calc(${wi} * (var(--key-width) + 2px))`;
 }
 
 function addKeyEvents(el, semitone) {
@@ -1154,7 +1190,7 @@ function endNote(s) {
 }
 
 // ═══════════════════════════════════════════════════
-// CHORD DETECTION & AUTO ROOT SELECTION
+// CHORD DETECTION & AUTO ROOT SELECTION (FIXED)
 // ═══════════════════════════════════════════════════
 const CHORD_TYPES = [
   {name:'',     iv:[0,4,7],      label:'メジャー'},
@@ -1180,33 +1216,49 @@ function determineAutoRoot() {
   if (pressed.length === 0) return;
   
   const pcs = [...new Set(pressed.map(s => ((s%12)+12)%12))].sort((a,b)=>a-b);
+  
+  let detectedRootPC = null;
+
   if (pcs.length === 1) {
-    if (currentRoot !== pcs[0]) {
-      currentRoot = pcs[0];
-      retuneActiveNotes();
+    detectedRootPC = pcs[0];
+  } else {
+    // コード分析による主音(Root)の割り出し
+    let found = false;
+    for (const root of pcs) {
+      const ivs = pcs.map(n => ((n-root)+12)%12).sort((a,b)=>a-b);
+      for (const ct of CHORD_TYPES) {
+        const ci = ct.iv.map(i=>i%12).sort((a,b)=>a-b);
+        if (ivs.length === ci.length && ivs.every((v,i)=>v===ci[i])) {
+          detectedRootPC = root;
+          found = true;
+          break;
+        }
+      }
+      if (found) break;
     }
-    return;
+    // 不明なコードの場合は一番低い構成音を主音クラスとする
+    if (detectedRootPC === null) {
+      detectedRootPC = ((pressed[0]%12)+12)%12;
+    }
   }
 
-  // Detect the chord structure to find the root logically
-  for (const root of pcs) {
-    const ivs = pcs.map(n => ((n-root)+12)%12).sort((a,b)=>a-b);
-    for (const ct of CHORD_TYPES) {
-      const ci = ct.iv.map(i=>i%12).sort((a,b)=>a-b);
-      if (ivs.length === ci.length && ivs.every((v,i)=>v===ci[i])) {
-        if (currentRoot !== root) {
-          currentRoot = root;
-          retuneActiveNotes();
-        }
-        return;
-      }
+  // 🎯 【オクターブズレ修正の核心】
+  // 実際に押されている鍵盤の「絶対ノート番号」から、割り出された主音(PC)に最も合致する実オクターブ位置を決定する
+  if (detectedRootPC !== null) {
+    // 押されているキーの中から、主音PCと完全に一致するノートを探す
+    const matchingNote = pressed.find(s => ((s%12)+12)%12 === detectedRootPC);
+    
+    if (matchingNote !== undefined) {
+      // 押された和音の中に主音そのものが含まれる場合は、そのオクターブを基準にする
+      currentRootOctave = Math.floor(matchingNote / 12) + 4;
+    } else {
+      // 展開形などで主音そのものが省かれている場合、一番低い音のオクターブをベースにする
+      currentRootOctave = Math.floor(pressed[0] / 12) + 4;
     }
-  }
-  
-  // Fallback: Use the lowest pressed note as the root if structure is unknown
-  const lowestPcs = ((pressed[0]%12)+12)%12;
-  if (currentRoot !== lowestPcs) {
-    currentRoot = lowestPcs;
+    
+    if (currentRoot !== detectedRootPC) {
+      currentRoot = detectedRootPC;
+    }
     retuneActiveNotes();
   }
 }
@@ -1225,7 +1277,6 @@ function updateChord() {
 
   const pcs = [...new Set(pressed.map(s => ((s%12)+12)%12))].sort((a,b)=>a-b);
 
-  // Sync selector value if auto-recognition is running
   if (tuning === 'just' && autoRecognize) {
     selectEl.value = currentRoot;
   }
@@ -1236,7 +1287,7 @@ function updateChord() {
   }
   if (pcs.length === 1) {
     nameEl.textContent = NOTE_NAMES[pcs[0]]; nameEl.className = 'chord-name';
-    typeEl.textContent = '単音' + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]})` : ''); return;
+    typeEl.textContent = '単音' + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]}${currentRootOctave})` : ''); return;
   }
 
   let best = null;
@@ -1252,10 +1303,10 @@ function updateChord() {
   if (best) {
     nameEl.textContent = NOTE_NAMES[best.root] + best.ct.name;
     nameEl.className = 'chord-name';
-    typeEl.textContent = best.ct.label + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]})` : '');
+    typeEl.textContent = best.ct.label + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]}${currentRootOctave})` : '');
   } else {
     nameEl.textContent = '?'; nameEl.className = 'chord-name';
-    typeEl.textContent = '不明なコード' + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]})` : '');
+    typeEl.textContent = '不明なコード' + (tuning === 'just' ? ` (主音: ${NOTE_NAMES[currentRoot]}${currentRootOctave})` : '');
   }
 }
 
@@ -1275,7 +1326,7 @@ function setTuning(t) {
   
   if (isJust) {
     document.getElementById('tuning-badge').textContent = '純正律';
-    setAutoRecognize(autoRecognize); // Refresh states
+    setAutoRecognize(autoRecognize);
   } else {
     document.getElementById('tuning-badge').textContent = '平均律';
     selectEl.style.display = 'none';
@@ -1303,6 +1354,7 @@ function setAutoRecognize(on) {
       document.getElementById('tuning-badge').textContent = '純正律:固定';
       selectEl.style.display = 'inline-block';
       selectEl.value = currentRoot;
+      currentRootOctave = 4; // 固定時は基準オクターブを4(中央)にデフォルト化
     }
     retuneActiveNotes();
     updateChord();
@@ -1312,6 +1364,7 @@ function setAutoRecognize(on) {
 function setManualRoot(rootValue) {
   if (tuning === 'just' && !autoRecognize) {
     currentRoot = rootValue;
+    currentRootOctave = 4;
     retuneActiveNotes();
     updateChord();
   }
@@ -1321,7 +1374,6 @@ function setTimbre(t) {
   timbre = t;
   document.getElementById('btn-sine').classList.toggle('active', t==='sine');
   document.getElementById('btn-wind').classList.toggle('active', t==='wind');
-  // Re-trigger notes to change wave composition structure
   Object.keys(activeOscs).forEach(s => { stopNote(s); playNote(s); });
 }
 
@@ -1423,6 +1475,7 @@ let pendulumStep = 0;
 
 function movePendulum(dir, measureSec) {
   const ball = document.getElementById('pendulum-ball');
+  if(!ball) return;
   const toPct = dir === 0 ? 92 : 8;
   const dur = Math.max(0.1, measureSec * 0.96);
   ball.style.transition = `left ${dur.toFixed(3)}s ease-in-out`;
@@ -1446,8 +1499,10 @@ function toggleMetro() {
     btn.textContent = '▶ スタート'; btn.classList.remove('running');
     clearTimeout(schTimer);
     const ball = document.getElementById('pendulum-ball');
-    ball.style.transition = 'left 0.4s ease';
-    ball.style.left = '50%';
+    if(ball) {
+      ball.style.transition = 'left 0.4s ease';
+      ball.style.left = '50%';
+    }
   }
 }
 
