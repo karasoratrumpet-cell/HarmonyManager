@@ -1693,6 +1693,122 @@ window.addEventListener('DOMContentLoaded', () => {
   setA4(442);
   adjustLayoutForDevice();
 });
+  // ──── 変更・追加するJavaScriptコード ────
+
+// 既存の activeOscs の構造を変更し、倍音の倍率も保存できるようにします
+function playNote(semitone) {
+  if (activeOscs[semitone]) return;
+  AC.resume();
+  
+  const gainNode = AC.createGain();
+  gainNode.gain.setValueAtTime(0, AC.currentTime);
+  gainNode.gain.linearRampToValueAtTime(0.22, AC.currentTime + 0.015);
+  gainNode.connect(masterGain);
+
+  const oscList = [];
+
+  // 周波数は後ほど一括で動的調律するため、ここではオシレーターと倍率のペアを登録します
+  if (timbre === 'sine') {
+    const o1 = AC.createOscillator(); o1.type = 'sine';
+    const o2 = AC.createOscillator(); o2.type = 'sine';
+    const g2 = AC.createGain(); g2.gain.value = 0.1;
+    o1.connect(gainNode); o2.connect(g2); g2.connect(gainNode);
+    o1.start(); o2.start();
+    oscList.push({ osc: o1, mult: 1 }, { osc: o2, mult: 2 });
+  } else {
+    [1,3,5,7].forEach((h,i) => {
+      const o = AC.createOscillator(); o.type = 'sine';
+      const g = AC.createGain(); g.gain.value = [0.55,0.35,0.12,0.04][i];
+      o.connect(g); g.connect(gainNode); o.start();
+      oscList.push({ osc: o, mult: h });
+    });
+  }
+
+  activeOscs[semitone] = { oscList, gainNode };
+  
+  // リアルタイム調律を実行
+  tuneActiveNotes();
+}
+
+// 完全に独立した調律用の関数を新設します（和音自動調整ロジック）
+function tuneActiveNotes() {
+  const pressed = [...pressedNotes].sort((a,b)=>a-b);
+  if (pressed.length === 0) return;
+
+  let rootSemitone = pressed[0]; // デフォルトは最低音をルートと仮定
+  
+  // 既存のコード判別ロジックを流用してルート音（0〜11）を特定
+  const pcs = [...new Set(pressed.map(s => ((s%12)+12)%12))].sort((a,b)=>a-b);
+  let best = null;
+  for (const root of pcs) {
+    const ivs = pcs.map(n => ((n-root)+12)%12).sort((a,b)=>a-b);
+    for (const ct of CHORD_TYPES) {
+      const ci = ct.iv.map(i=>i%12).sort((a,b)=>a-b);
+      if (ivs.length===ci.length && ivs.every((v,i)=>v===ci[i])) { best={root,ct}; break; }
+    }
+    if (best) break;
+  }
+
+  // 判別されたルート音に合致する、実際に押されている鍵盤のsemitoneを基準音に設定
+  if (best) {
+    const found = pressed.find(s => ((s%12)+12)%12 === best.root);
+    if (found !== undefined) rootSemitone = found;
+  }
+
+  // ルート音の「平均律」での周波数を全体の純正律の基準（1）とする
+  const rootEqualFreq = A4_FREQ * Math.pow(2, (rootSemitone - 9) / 12);
+
+  // 現在鳴っている全てのオシレーターの周波数を再計算してリアルタイム適用
+  for (const semitone in activeOscs) {
+    const s = parseInt(semitone);
+    let freq;
+
+    if (tuning === 'equal' || !best) {
+      // 平均律、またはコードが判別できない場合は通常の平均律
+      freq = A4_FREQ * Math.pow(2, (s - 9) / 12);
+    } else {
+      // 和音自動調整（純正律）：ルート音からのオクターブ差と度数（半音数）を算出
+      const diff = s - rootSemitone;
+      const octShift = Math.floor(diff / 12);
+      const degree = ((diff % 12) + 12) % 12;
+      
+      // ルートの平均律周波数 × オクターブ倍率 × 純正律比率
+      freq = rootEqualFreq * Math.pow(2, octShift) * JUST[degree];
+    }
+
+    // 各オシレーターの周波数（倍音含む）を書き換え
+    activeOscs[semitone].oscList.forEach(item => {
+      item.osc.frequency.setValueAtTime(freq * item.mult, AC.currentTime);
+    });
+  }
+}
+
+// 既存のイベント関数（startNote, endNote, setTuning）の最後に tuneActiveNotes() を挟みます
+function startNote(s) {
+  if (pressedNotes.has(s)) return;
+  pressedNotes.add(s);
+  playNote(s);
+  document.querySelectorAll(`.key[data-semitone="${s}"]`).forEach(k => k.classList.add('pressed'));
+  updateChord();
+  tuneActiveNotes(); // 追加
+}
+
+function endNote(s) {
+  if (!pressedNotes.has(s)) return;
+  pressedNotes.delete(s);
+  stopNote(s);
+  document.querySelectorAll(`.key[data-semitone="${s}"]`).forEach(k => k.classList.remove('pressed'));
+  updateChord();
+  tuneActiveNotes(); // 追加
+}
+
+function setTuning(t) {
+  tuning = t;
+  document.getElementById('btn-equal').classList.toggle('active', t==='equal');
+  document.getElementById('btn-just').classList.toggle('active',  t==='just');
+  document.getElementById('tuning-badge').textContent = t==='equal'?'平均律':'純正律';
+  tuneActiveNotes(); // オシレーターの再生成ではなく、周波数の書き換えに統一
+}
 </script>
 </body>
 </html>
