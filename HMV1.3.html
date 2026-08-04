@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>HarmoniX — 音楽ツール v1.3</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Noto+Sans+JP:wght@300;400;700&family=Space+Mono:wght@400;700&display=swap');
+
+:root {
+  --bg: #0a0a0f;
+  --panel: #12121a;
+  --panel2: #1a1a26;
+  --border: #2a2a3e;
+  --accent: #e8c547;
+  --accent2: #47b8e8;
+  --accent3: #e84778;
+  --text: #e8e8f0;
+  --text-dim: #6a6a8a;
+  --white-key: #f0ede5;
+  --black-key: #1a1820;
+}
+
+* { margin:0; padding:0; box-sizing:border-box; }
+
+html, body {
+  height: 100vh;
+  width: 100vw;
+  overflow: hidden;
+  background: var(--bg);
+  color: var(--text);
+  font-family: 'Noto Sans JP', sans-serif;
+}
+
+body::before {
+  content:'';
+  position:fixed; inset:0;
+  background-image:
+    linear-gradient(rgba(232,197,71,0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,197,71,0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+  pointer-events:none;
+  z-index:0;
+}
+
+/* 100vh 内で納めるフレックスコンテナ */
+.app {
+  position:relative; z-index:1;
+  max-width: 1200px;
+  width: 100%;
+  height: 100vh;
+  margin: 0 auto;
+  padding: 12px 16px;
+  display: flex;
+  flex-direction: column;
+}
+
+/* ── HEADER ── */
+header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 8px;
+  border-bottom: 1px solid var(--border);
+  flex-shrink: 0;
+}
+
+.brand { display: flex; flex-direction: column; }
+
+h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.2rem;
+  letter-spacing: 0.12em;
+  background: linear-gradient(135deg, var(--accent), var(--accent2));
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  line-height: 1;
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+}
+
+.version {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.85rem;
+  color: var(--text-dim);
+  -webkit-text-fill-color: var(--text-dim);
+}
+
+.subtitle {
+  font-size: 0.6rem;
+  color: var(--text-dim);
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  margin-top: 1px;
+  font-family: 'Space Mono', monospace;
+}
+
+.tab-bar { display: flex; gap: 6px; align-items: center; }
+
+.tab {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 0 12px;
+  height: 38px;
+  border-radius: 8px;
+  border: 1px solid var(--border);
+  background: var(--panel);
+  color: var(--text-dim);
+  cursor: pointer;
+  transition: all 0.18s;
+}
+.tab-label {
+  font-family: 'Space Mono', monospace;
+  font-size: 0.7rem;
+  font-weight: 700;
+}
+.tab.active {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+}
+.tab.active svg { stroke: var(--bg) !important; }
+
+/* ── PANEL CONTAINER ── */
+.panel { display: none; flex: 1; min-height: 0; flex-direction: column; }
+.panel.active { display: flex; }
+
+/* ── CONTROLS ── */
+.hd-controls {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin: 8px 0;
+  flex-shrink: 0;
+}
+
+.ctrl-group {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 6px 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  flex: 1;
+  min-width: 120px;
+}
+
+.ctrl-label {
+  font-size: 0.58rem;
+  letter-spacing: 0.15em;
+  color: var(--text-dim);
+  text-transform: uppercase;
+  font-family: 'Space Mono', monospace;
+}
+
+.toggle-row { display: flex; gap: 4px; }
+.toggle-btn {
+  flex: 1;
+  padding: 4px 0;
+  border: 1px solid var(--border);
+  background: transparent;
+  color: var(--text-dim);
+  border-radius: 4px;
+  cursor: pointer;
+  font-size: 0.68rem;
+  font-family: 'Space Mono', monospace;
+}
+.toggle-btn.active { background: var(--accent2); border-color: var(--accent2); color: var(--bg); font-weight:700; }
+
+/* ── CHORD DISPLAY ── */
+.chord-display {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 0 12px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  height: 52px;
+  flex-shrink: 0;
+}
+
+.chord-name {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 2.4rem;
+  line-height: 1;
+  color: var(--accent);
+  width: 110px;
+  min-width: 110px;
+  white-space: nowrap;
+  overflow: hidden;
+}
+.chord-name.no-chord { color: var(--border); }
+
+.chord-info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.chord-type { font-size: 0.68rem; color: var(--text-dim); }
+.active-notes { display: flex; gap: 4px; overflow: hidden; }
+.note-pill {
+  padding: 1px 5px;
+  border-radius: 99px;
+  background: rgba(71,184,232,0.12);
+  border: 1px solid var(--accent2);
+  color: var(--accent2);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.6rem;
+}
+
+.tuning-badge {
+  padding: 2px 6px;
+  border-radius: 4px;
+  background: rgba(232,197,71,0.1);
+  border: 1px solid rgba(232,197,71,0.3);
+  color: var(--accent);
+  font-family: 'Space Mono', monospace;
+  font-size: 0.58rem;
+}
+
+/* ── OCTAVE NAV BAR ── */
+.octave-nav {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-bottom: 6px;
+  flex-shrink: 0;
+}
+.oct-btn {
+  padding: 0 12px;
+  height: 32px;
+  border: 1px solid var(--accent2);
+  background: var(--panel);
+  color: var(--accent2);
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.72rem;
+  font-weight: 700;
+}
+.oct-btn:disabled { opacity: 0.3; cursor: default; }
+
+.oct-range-label {
+  flex: 1;
+  text-align: center;
+  font-family: 'Space Mono', monospace;
+  font-size: 0.65rem;
+  color: var(--text-dim);
+}
+
+/* ── KEYBOARD (Flex-1で可変対応) ── */
+.keyboard-wrap {
+  flex: 1;
+  min-height: 120px;
+  overflow-x: auto;
+  overflow-y: hidden;
+  position: relative;
+  border-radius: 6px;
+}
+
+.keyboard {
+  position: relative;
+  height: 100%;
+  user-select: none;
+}
+
+.key.white {
+  position: absolute;
+  top: 0;
+  width: 36px;
+  height: 100%;
+  background: var(--white-key);
+  border-left: 1px solid #c8b898;
+  border-right: 1px solid #b0a080;
+  border-bottom: 1px solid #a09070;
+  border-radius: 0 0 5px 5px;
+  z-index: 1;
+  cursor: pointer;
+  box-shadow: inset -1px 0 0 rgba(255,255,255,0.4), 0 3px 6px rgba(0,0,0,0.3);
+}
+.key.white.pressed { background: #ffe066; }
+
+.key.black {
+  position: absolute;
+  top: 0;
+  width: 22px;
+  height: 60%;
+  background: var(--black-key);
+  border: 1px solid #0a0810;
+  border-radius: 0 0 4px 4px;
+  z-index: 2;
+  cursor: pointer;
+  box-shadow: 2px 5px 10px rgba(0,0,0,0.75);
+}
+.key.black.pressed { background: #e8c547; }
+
+.key-label {
+  position: absolute;
+  bottom: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 0.5rem;
+  font-family: 'Space Mono', monospace;
+  color: #9a8a70;
+  pointer-events: none;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  line-height: 1;
+}
+
+.pc-key-hint {
+  font-size: 0.45rem;
+  color: #c43256;
+  font-weight: bold;
+  margin-top: 2px;
+}
+
+.a-spin-btn { width: 30px; height: 30px; border: 1px solid var(--accent); background: transparent; color: var(--accent); cursor: pointer; border-radius: 4px; }
+.a-spin-display { min-width: 44px; text-align: center; font-family: 'Bebas Neue', sans-serif; font-size: 1.4rem; color: var(--accent); line-height: 30px; }
+</style>
+</head>
+<body>
+<div class="app">
+  <header>
+    <div class="brand">
+      <h1>HarmoniX <span class="version">v1.3</span></h1>
+      <div class="subtitle">Music Tool // Adaptive Fit</div>
+    </div>
+    <div class="tab-bar">
+      <button class="tab active" onclick="switchTab('harmony',this)">
+        <span class="tab-label">キーボード</span>
+      </button>
+      <button class="tab" onclick="switchTab('metro',this)">
+        <span class="tab-label">メトロノーム</span>
+      </button>
+    </div>
+  </header>
+
+  <div id="panel-harmony" class="panel active">
+    <div class="hd-controls">
+      <div class="ctrl-group">
+        <div class="ctrl-label">チューニング</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="btn-equal" onclick="setTuning('equal')">平均律</button>
+          <button class="toggle-btn" id="btn-just" onclick="setTuning('just')">純正律</button>
+        </div>
+        <div class="toggle-row" id="autoroot-row" style="margin-top:2px; display:none;">
+          <button class="toggle-btn active" id="btn-autoroot-on" onclick="setAutoRoot(true)">根音自動</button>
+          <button class="toggle-btn" id="btn-autoroot-off" onclick="setAutoRoot(false)">C固定</button>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">音色</div>
+        <div class="toggle-row">
+          <button class="toggle-btn active" id="btn-sine" onclick="setTimbre('sine')">シンプル</button>
+          <button class="toggle-btn" id="btn-wind" onclick="setTimbre('wind')">管楽器</button>
+        </div>
+      </div>
+      <div class="ctrl-group">
+        <div class="ctrl-label">音量</div>
+        <input type="range" class="vol-slider" min="0" max="1" step="0.01" value="0.5" oninput="setVolume(this.value)" style="margin-top:4px;">
+      </div>
+      <div class="ctrl-group" style="min-width:110px;">
+        <div class="ctrl-label">基準音 A</div>
+        <div style="display:flex;align-items:center;gap:0;margin-top:2px;">
+          <button class="a-spin-btn" onclick="setA4(tunerA4-1)">−</button>
+          <div class="a-spin-display" id="a4-display-harmony">442</div>
+          <button class="a-spin-btn" onclick="setA4(tunerA4+1)">＋</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="chord-display">
+      <div class="chord-name no-chord" id="chord-name">—</div>
+      <div class="chord-info">
+        <div class="chord-type" id="chord-type">鍵盤または PCキーボード (Z/Q列) を押してください</div>
+        <div class="active-notes" id="active-notes-display"></div>
+      </div>
+      <div class="tuning-badge" id="tuning-badge">平均律</div>
+    </div>
+
+    <div class="octave-nav">
+      <button class="oct-btn" id="oct-prev" onclick="shiftOctave(-1)">◀ 1oct下</button>
+      <div class="oct-range-label" id="oct-range-label">C3 〜 B5</div>
+      <button class="oct-btn" id="oct-next" onclick="shiftOctave(+1)">1oct上 ▶</button>
+    </div>
+
+    <!-- 自動的に画面残領域に縮小・拡大されるラッパー -->
+    <div class="keyboard-wrap"><div class="keyboard" id="keyboard"></div></div>
+  </div>
+
+  <div id="panel-metro" class="panel">
+    <div style="padding: 20px; text-align: center; color: var(--text-dim);">
+      メトロノーム パネル
+    </div>
+  </div>
+</div>
+
+<script>
+'use strict';
+const AC = new (window.AudioContext || window.webkitAudioContext)();
+const masterGain = AC.createGain(); masterGain.gain.value = 0.5; masterGain.connect(AC.destination);
+
+function setVolume(v) { masterGain.gain.value = parseFloat(v); }
+
+let tuning = 'equal';
+let timbre = 'sine';
+let A4_FREQ = 442;
+let autoRoot = true;
+
+const JUST = [1, 16/15, 9/8, 6/5, 5/4, 4/3, 45/32, 3/2, 8/5, 5/3, 9/5, 15/8];
+const activeOscs = {};
+const pressedNotes = new Set();
+
+/* PCキーボードのマッピング定義 (相対半音) */
+const PC_KEY_MAP = {
+  'z': 0, 's': 1, 'x': 2, 'd': 3, 'c': 4, 'v': 5, 'g': 6, 'b': 7, 'h': 8, 'n': 9, 'j': 10, 'm': 11,
+  'q': 12, '2': 13, 'w': 14, '3': 15, 'e': 16, 'r': 17, '5': 18, 't': 19, '6': 20, 'y': 21, '7': 22, 'u': 23, 'i': 24
+};
+
+function playNote(semitone) {
+  if (activeOscs[semitone]) return;
+  if (AC.state === 'suspended') AC.resume();
+  
+  const now = AC.currentTime;
+  const gainNode = AC.createGain();
+  
+  /* 
+   * 【ノイズ対策】
+   *  アタック開始時に linearRampToValueAtTime による25msの平滑フェードインを通過させ、
+   *  波形の不連続によるクリック（バチッという発音ノイズ）を完全に防止します。
+   */
+  gainNode.gain.cancelScheduledValues(now);
+  gainNode.gain.setValueAtTime(0.00001, now);
+
+  const filter = AC.createBiquadFilter();
+  filter.type = 'lowpass';
+
+  const oscList = [];
+
+  if (timbre === 'sine') {
+    gainNode.gain.linearRampToValueAtTime(0.2, now + 0.025);
+    filter.frequency.setValueAtTime(2400, now);
+
+    const o = AC.createOscillator();
+    o.type = 'sine';
+    o.connect(filter);
+    oscList.push({ osc: o, mult: 1 });
+  } else {
+    gainNode.gain.linearRampToValueAtTime(0.2, now + 0.035);
+    filter.frequency.setValueAtTime(1600, now);
+
+    const harmonics = [
+      { mult: 1, gain: 0.65 },
+      { mult: 2, gain: 0.18 },
+      { mult: 3, gain: 0.08 },
+      { mult: 4, gain: 0.03 }
+    ];
+
+    harmonics.forEach(h => {
+      const o = AC.createOscillator();
+      o.type = 'sine';
+      const g = AC.createGain();
+      g.gain.value = h.gain;
+      o.connect(g);
+      g.connect(filter);
+      oscList.push({ osc: o, mult: h.mult });
+    });
+  }
+
+  filter.connect(gainNode);
+  gainNode.connect(masterGain);
+
+  oscList.forEach(item => item.osc.start(now));
+  activeOscs[semitone] = { oscList, gainNode };
+  tuneActiveNotes();
+}
+
+function stopNote(semitone) {
+  if (!activeOscs[semitone]) return;
+  const { oscList, gainNode } = activeOscs[semitone];
+  const t = AC.currentTime;
+  gainNode.gain.cancelScheduledValues(t);
+  const currentGain = Math.max(gainNode.gain.value, 0.0001);
+  gainNode.gain.setValueAtTime(currentGain, t);
+  gainNode.gain.exponentialRampToValueAtTime(0.0001, t + 0.08); 
+  oscList.forEach(item => { try { item.osc.stop(t + 0.1); } catch(e){} });
+  delete activeOscs[semitone];
+  
+  setTimeout(() => { if(Object.keys(activeOscs).length > 0) tuneActiveNotes(); }, 10);
+}
+
+function tuneActiveNotes() {
+  const pressed = [...pressedNotes].sort((a,b)=>a-b);
+  let rootSemitone = pressed.length > 0 ? pressed[0] : null;
+
+  if (pressed.length > 0 && autoRoot && tuning === 'just') {
+    const pcs = [...new Set(pressed.map(s => ((s%12)+12)%12))].sort((a,b)=>a-b);
+    let best = null;
+    for (const root of pcs) {
+      const ivs = pcs.map(n => ((n-root)+12)%12).sort((a,b)=>a-b);
+      for (const ct of CHORD_TYPES) {
+        const ci = ct.iv.map(i=>i%12).sort((a,b)=>a-b);
+        if (ivs.length===ci.length && ivs.every((v,i)=>v===ci[i])) { best={root,ct}; break; }
+      }
+      if (best) break;
+    }
+    if (best) {
+      const found = pressed.find(s => ((s%12)+12)%12 === best.root);
+      if (found !== undefined) rootSemitone = found;
+    }
+  }
+
+  const t = AC.currentTime;
+  const rootEqualFreq = rootSemitone !== null ? (A4_FREQ * Math.pow(2, (rootSemitone - 9) / 12)) : A4_FREQ;
+
+  for (const semitone in activeOscs) {
+    const s = parseInt(semitone);
+    let freq;
+    if (tuning === 'equal' || rootSemitone === null || !autoRoot) {
+      freq = A4_FREQ * Math.pow(2, (s - 9) / 12);
+    } else {
+      const diff = s - rootSemitone;
+      const octShift = Math.floor(diff / 12);
+      const degree = ((diff % 12) + 12) % 12;
+      freq = rootEqualFreq * Math.pow(2, octShift) * JUST[degree];
+    }
+    activeOscs[semitone].oscList.forEach(item => {
+      item.osc.frequency.setTargetAtTime(freq * item.mult, t, 0.02);
+    });
+  }
+}
+
+function startNote(s) {
+  if (pressedNotes.has(s)) return;
+  pressedNotes.add(s); playNote(s);
+  document.querySelectorAll(`.key[data-semitone="${s}"]`).forEach(k => k.classList.add('pressed'));
+  updateChord();
+}
+
+function endNote(s) {
+  if (!pressedNotes.has(s)) return;
+  pressedNotes.delete(s); stopNote(s);
+  document.querySelectorAll(`.key[data-semitone="${s}"]`).forEach(k => k.classList.remove('pressed'));
+  updateChord();
+}
+
+const CHORD_TYPES = [
+  {name:'',iv:[0,4,7],label:'メジャー'}, {name:'m',iv:[0,3,7],label:'マイナー'},
+  {name:'7',iv:[0,4,7,10],label:'ドミナント7th'}, {name:'M7',iv:[0,4,7,11],label:'メジャー7th'},
+  {name:'m7',iv:[0,3,7,10],label:'マイナー7th'}, {name:'dim',iv:[0,3,6],label:'ディミニッシュ'},
+  {name:'sus4',iv:[0,5,7],label:'サスフォー'}
+];
+const NOTE_NAMES = ['C','D♭','D','E♭','E','F','G♭','G','A♭','A','B♭','B'];
+const WHITE_DEG = [0,2,4,5,7,9,11];
+const BLACK_AFTER = [1,3,null,6,8,10,null];
+
+let OCT_SPAN = 3, octLo = 3;
+const OCT_MIN = 1, OCT_MAX = 7, KW = 36, KG = 2, KB_W = 22;
+
+function octHi() { return octLo + OCT_SPAN - 1; }
+function shiftOctave(delta) {
+  const newLo = octLo + delta;
+  if (newLo < OCT_MIN || newLo + OCT_SPAN - 1 > OCT_MAX) return;
+  [...pressedNotes].forEach(s => endNote(s));
+  octLo = newLo; buildKeyboard(); updateOctaveNav();
+}
+function updateOctaveNav() {
+  document.getElementById('oct-range-label').textContent = `C${octLo} 〜 B${octHi()}`;
+  document.getElementById('oct-prev').disabled = (octLo <= OCT_MIN);
+  document.getElementById('oct-next').disabled = (octHi() >= OCT_MAX);
+}
+
+function buildKeyboard() {
+  const kb = document.getElementById('keyboard');
+  if (!kb) return;
+  kb.innerHTML = '';
+  let wi = 0;
+  
+  // PCキー表示用のガイドテーブル
+  const hintMap = {0:'Z',1:'S',2:'X',3:'D',4:'C',5:'V',6:'G',7:'B',8:'H',9:'N',10:'J',11:'M',12:'Q',13:'2',14:'W',15:'3',16:'E',17:'R',18:'5',19:'T',20:'6',21:'Y',22:'7',23:'U',24:'I'};
+
+  for (let oct = octLo; oct <= octHi(); oct++) {
+    for (let pos = 0; pos < WHITE_DEG.length; pos++) {
+      const degree = WHITE_DEG[pos], semitone = (oct - 4) * 12 + degree;
+      const wk = document.createElement('div');
+      wk.className = 'key white'; wk.dataset.semitone = semitone;
+      wk.style.left = (wi * (KW + KG)) + 'px';
+      
+      const relSemitone = semitone - (octLo - 4) * 12;
+      const keyHint = hintMap[relSemitone] ? `<span class="pc-key-hint">[${hintMap[relSemitone]}]</span>` : '';
+      
+      const lbl = document.createElement('div'); 
+      lbl.className = 'key-label'; 
+      lbl.innerHTML = (degree === 0 ? 'C' + oct : '') + keyHint; 
+      wk.appendChild(lbl);
+
+      addKeyEvents(wk, semitone); kb.appendChild(wk);
+      const bd = BLACK_AFTER[pos];
+      if (bd !== null) {
+        const bs = (oct - 4) * 12 + bd;
+        const bk = document.createElement('div'); bk.className = 'key black'; bk.dataset.semitone = bs;
+        bk.style.left = (wi * (KW + KG) + KW - KB_W / 2 + KG / 2) + 'px';
+        
+        const relBS = bs - (octLo - 4) * 12;
+        if (hintMap[relBS]) {
+          const bLbl = document.createElement('div');
+          bLbl.className = 'key-label';
+          bLbl.innerHTML = `<span class="pc-key-hint" style="color:#e8c547;">${hintMap[relBS]}</span>`;
+          bk.appendChild(bLbl);
+        }
+
+        addKeyEvents(bk, bs); kb.appendChild(bk);
+      }
+      wi++;
+    }
+  }
+  kb.style.width = (wi * (KW + KG)) + 'px';
+}
+
+function addKeyEvents(el, semitone) {
+  el.addEventListener('mousedown', e => { e.preventDefault(); startNote(semitone); });
+  el.addEventListener('mouseup', ()=> endNote(semitone));
+  el.addEventListener('mouseleave', ()=> { if (el.classList.contains('pressed')) endNote(semitone); });
+  el.addEventListener('touchstart', e => { e.preventDefault(); startNote(semitone); }, {passive:false});
+  el.addEventListener('touchend', e => { e.preventDefault(); endNote(semitone); });
+}
+
+/* ── PCキーボード (Physical Keyboard) イベントリスナー ── */
+window.addEventListener('keydown', (e) => {
+  if (e.repeat || e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if (PC_KEY_MAP.hasOwnProperty(k)) {
+    const relativeSemitone = PC_KEY_MAP[k];
+    const semitone = (octLo - 4) * 12 + relativeSemitone;
+    startNote(semitone);
+  }
+});
+
+window.addEventListener('keyup', (e) => {
+  if (e.target.tagName === 'INPUT') return;
+  const k = e.key.toLowerCase();
+  if (PC_KEY_MAP.hasOwnProperty(k)) {
+    const relativeSemitone = PC_KEY_MAP[k];
+    const semitone = (octLo - 4) * 12 + relativeSemitone;
+    endNote(semitone);
+  }
+});
+
+function updateChord() {
+  const nameEl = document.getElementById('chord-name');
+  const typeEl = document.getElementById('chord-type');
+  const notesEl = document.getElementById('active-notes-display');
+  const pressed = [...pressedNotes].sort((a,b)=>a-b);
+  
+  notesEl.innerHTML = pressed.map(s => `<span class="note-pill">${NOTE_NAMES[((s%12)+12)%12]}${Math.floor(s/12) + 4}</span>`).join('');
+  const pcs = [...new Set(pressed.map(s => ((s%12)+12)%12))].sort((a,b)=>a-b);
+
+  if (pcs.length === 0) {
+    nameEl.textContent = '—'; nameEl.className = 'chord-name no-chord';
+    typeEl.textContent = '鍵盤を押してください'; return;
+  }
+  if (pcs.length === 1) {
+    nameEl.textContent = NOTE_NAMES[pcs[0]]; nameEl.className = 'chord-name';
+    typeEl.textContent = '単音'; return;
+  }
+  let best = null;
+  for (const root of pcs) {
+    const ivs = pcs.map(n => ((n-root)+12)%12).sort((a,b)=>a-b);
+    for (const ct of CHORD_TYPES) {
+      const ci = ct.iv.map(i=>i%12).sort((a,b)=>a-b);
+      if (ivs.length===ci.length && ivs.every((v,i)=>v===ci[i])) { best={root,ct}; break; }
+    }
+    if (best) break;
+  }
+  if (best) {
+    nameEl.textContent = NOTE_NAMES[best.root] + best.ct.name;
+    nameEl.className = 'chord-name'; typeEl.textContent = best.ct.label;
+  } else {
+    nameEl.textContent = '?'; nameEl.className = 'chord-name'; typeEl.textContent = '不明なコード';
+  }
+}
+
+function setTuning(t) {
+  tuning = t;
+  document.getElementById('btn-equal').classList.toggle('active', t==='equal');
+  document.getElementById('btn-just').classList.toggle('active',  t==='just');
+  document.getElementById('autoroot-row').style.display = (t === 'just') ? 'flex' : 'none';
+  document.getElementById('tuning-badge').textContent = t==='equal' ? '平均律' : (autoRoot ? '純正律(自動)' : '純正律(C固定)');
+  tuneActiveNotes();
+}
+
+function setAutoRoot(val) {
+  autoRoot = val;
+  document.getElementById('btn-autoroot-on').classList.toggle('active', val);
+  document.getElementById('btn-autoroot-off').classList.toggle('active', !val);
+  document.getElementById('tuning-badge').textContent = autoRoot ? '純正律(自動)' : '純正律(C固定)';
+  tuneActiveNotes();
+}
+
+function setTimbre(t) {
+  timbre = t;
+  document.getElementById('btn-sine').classList.toggle('active', t==='sine');
+  document.getElementById('btn-wind').classList.toggle('active', t==='wind');
+  [...pressedNotes].forEach(s=>{stopNote(s);playNote(s);});
+}
+
+let tunerA4 = 442;
+function setA4(hz) {
+  tunerA4 = A4_FREQ = Math.max(415, Math.min(470, parseInt(hz)));
+  if(document.getElementById('a4-display-harmony')) document.getElementById('a4-display-harmony').textContent = hz;
+  tuneActiveNotes();
+}
+
+function switchTab(name, el) {
+  document.querySelectorAll('.panel').forEach(p=>p.classList.remove('active'));
+  document.querySelectorAll('.tab').forEach(t=>t.classList.remove('active'));
+  document.getElementById('panel-'+name).classList.add('active');
+  el.classList.add('active');
+}
+
+window.addEventListener('DOMContentLoaded', () => {
+  buildKeyboard();
+  updateOctaveNav();
+  setA4(442);
+});
+</script>
+</body>
+</html>
